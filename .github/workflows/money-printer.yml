@@ -1,4 +1,4 @@
-name: Run Money Printer Turbo with Gemini & Custom Audio
+name: Run Money Printer Turbo with Images & Custom Audio
 
 on:
   workflow_dispatch:
@@ -10,9 +10,9 @@ on:
         type: string
       
       audio_file:
-        description: 'اسم ملف الصوت داخل مجلد src (مثلاً: audio.mp3)'
+        description: 'اسم ملف الصوت (مثلاً: a10.m4a)'
         required: true
-        default: 'audio.mp3'
+        default: 'a10.m4a'
         type: string
 
 jobs:
@@ -20,38 +20,34 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. سحب كود المشروع إلى سيرفر GitHub
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # 2. تثبيت لغة بايثون
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
           cache: 'pip'
 
-      # 3. تثبيت المكتبات والمتطلبات الخاصة بالأداة
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-      # 4. تشغيل الأداة وتمرير المدخلات والمتغيرات السرية
       - name: Run Video Generation Script
         run: |
-          echo "بدء عملية توليد الفيديو..."
+          echo "بدء عملية توليد الفيديو بالصور فقط..."
           echo "الموضوع: ${{ github.event.inputs.topic }}"
           echo "ملف الصوت: ${{ github.event.inputs.audio_file }}"
           
-          python cli.py --subject "${{ github.event.inputs.topic }}" --audio-path "src/${{ github.event.inputs.audio_file }}"
+          # أضفنا هنا المعامل الخاص بالصور (يمكنك تعديل المعامل بناءً على وثائق الأداة إن وجد، أو الاعتماد على إعدادات الـ config)
+          python cli.py --subject "${{ github.event.inputs.topic }}" --audio-path "${{ github.event.inputs.audio_file }}" --material-type "images"
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
           LLM_PROVIDER: "gemini"
           GEMINI_MODEL: "gemini-3.1-flash-lite"
 
-      # 5. خطوة حفظ ورفع الفيديو الناتج لتحميله
       - name: Upload Generated Video Artifact
         uses: actions/upload-artifact@v4
         with:
