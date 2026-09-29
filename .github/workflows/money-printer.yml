@@ -42,7 +42,7 @@ jobs:
         run: |
           echo "بدء عملية توليد الفيديو..."
           echo "الموضوع: ${{ github.event.inputs.topic }}"
-          echo "ملف الصوت: src/${{ github.event.inputs.audio_file }}"
+          echo "ملف الصوت: ${{ github.event.inputs.audio_file }}"
           
           python cli.py --subject "${{ github.event.inputs.topic }}" --audio-path "src/${{ github.event.inputs.audio_file }}"
         env:
