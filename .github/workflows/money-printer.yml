@@ -40,17 +40,14 @@ jobs:
       # 4. تشغيل الأداة باستخدام المعاملات الصحيحة ومصدر Pexels
       - name: Run Video Generation Script
         run: |
-          echo "بدء عملية توليد الفيديو عبر Pexels..."
+          echo "بدء عملية توليد الفيديو عبر Pexels باستخدام Gemini..."
           echo "الموضوع: ${{ github.event.inputs.topic }}"
           echo "ملف الصوت: ${{ github.event.inputs.audio_file }}"
           
-          python cli.py --video-subject "${{ github.event.inputs.topic }}" --custom-audio-file "${{ github.event.inputs.audio_file }}" --video-source pexels
+          python cli.py --video-subject "${{ github.event.inputs.topic }}" --custom-audio-file "${{ github.event.inputs.audio_file }}" --video-source pexels --llm-provider gemini --gemini-model gemini-3.1-flash-lite
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
-          LLM_PROVIDER: "gemini"
-          GEMINI_MODEL: "gemini-3.1-flash-lite"
-
       # 5. خطوة حفظ ورفع الفيديو الناتج لتحميله
       - name: Upload Generated Video Artifact
         uses: actions/upload-artifact@v4
